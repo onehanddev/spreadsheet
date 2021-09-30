@@ -34,8 +34,6 @@ import {createAllElements, createElement} from './dom-utils.js';
             }
         })
 
-
-
         // INSERT ROW AND COLS | EVENT
         contextMenuElem.addEventListener('click', function(e) {
             switch (e.target.id) {
@@ -55,8 +53,7 @@ import {createAllElements, createElement} from './dom-utils.js';
                     break;
             }
         })
-
-            
+ 
         // ON CHANGING OR ADDING A VALUE TO CELL | EVENT
         container__elem.addEventListener('keyup', function(e) {
             const val = e.target.innerText;
@@ -86,23 +83,54 @@ import {createAllElements, createElement} from './dom-utils.js';
 
             
         })
+
+        // On search
+        document.querySelector('#search-btn').addEventListener('click', function(e) {
+            const value = document.querySelector('#search-input').value;
+            searchCell(value);
+        })
     }
     
+    function searchCell(query) {
+        const resultAdd = Object.keys(state).find(cellAdd => {
+            if(state[cellAdd] === query) {
+                return cellAdd;
+            }
+        });
+        const rowAdd = resultAdd[0];
+        const rowElem = document.querySelector(`#row-${rowAdd}`);
+        const colAdd = `.col-${resultAdd.replace(rowAdd, '')}`;
+        const colElem = rowElem.querySelector(colAdd);
+        colElem.style.border = '1px solid blue';
+    }
 
     function insertRow() {
-        let currentID = selectedColumn.dataset.content;
-            
-        container__elem.querySelectorAll(`.col-${currentID}`).forEach((colElem, idx) => {
+        let currentID = Number(selectedColumn.dataset.content);
+        let count = 1;
+        let colElementToAppend = document.querySelector(`.col-${currentID}`);
+        while(colElementToAppend) {
             let newCol = createElement(`col col-${currentID}`);
             newCol.dataset.content = currentID;
-            colElem.insertAdjacentElement('beforebegin', newCol, true);
-        });
+            colElementToAppend.insertAdjacentElement('beforebegin', newCol, true);
+            colElementToAppend = colElementToAppend.parentElement?.nextElementSibling?.querySelector(`.col-${currentID}`);
+            console.log(count += 1);
+        }
+            
+
+        // Increment the row header count by one
+        const totalCols = document.querySelector('#row-header').childElementCount;
+        let currentColumn = document.querySelector('#row-header').children[currentID+1];
+        while(currentID < totalCols) {
+            currentColumn.className = `col col-${currentID+1}`;
+            currentColumn.dataset.content = currentID+1;
+            currentColumn = currentColumn.nextElementSibling;
+            currentID++;
+        }
     }
 
 
     function insertCol() {
         const selectedRowElem = selectedColumn.parentElement;
-
             let newRowElem = selectedRowElem.cloneNode(true);
             const charCodeOfID = newRowElem.id.split('-')[1].charCodeAt();
             newRowElem.id = selectedRowElem.id;
@@ -138,6 +166,7 @@ import {createAllElements, createElement} from './dom-utils.js';
             allValues = allValues.sort((a,b) => b.localeCompare(a, 'en', { numeric: true }))
         }
 
+        // Refresh the state variable and dom columns as the sorting has affected both
         const colsElement  = selectedColumn.parentElement.children;
         for(let i=0; i<=colsElement.length; i++) {
             if(i >= allValues.length && colsElement[i+1]) {
@@ -148,10 +177,6 @@ import {createAllElements, createElement} from './dom-utils.js';
                 state[rowName+(i+1)] = allValues[i];
             }
         }   
-
-
-
-        
 
     }
 
