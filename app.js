@@ -140,12 +140,16 @@ import {createAllElements, createElement} from './dom-utils.js';
 
         const colsElement  = selectedColumn.parentElement.children;
         for(let i=0; i<=colsElement.length; i++) {
-            if(i >= allValues.length) {
+            if(i >= allValues.length && colsElement[i+1]) {
                 colsElement[i+1].innerText = '';
+                state[rowName+(i+1)] = '';
             } else {
                 colsElement[i+1].innerText = allValues[i];
+                state[rowName+(i+1)] = allValues[i];
             }
         }   
+
+
 
         
 
