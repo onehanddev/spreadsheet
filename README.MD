@@ -19,5 +19,6 @@ To run the app on a local server, install -
 
 Run this in project directory -
 
-```live-server
+```sh
+  live-server
   ```

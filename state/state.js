@@ -16,20 +16,16 @@ export default (function() {
       })
       
       
-      const models = document.querySelectorAll('[data-model]')
+      const cells = document.querySelectorAll('[data-content]')
       
-      models.forEach((model) => {
-        const key = model.dataset.model;
-        model.addEventListener('keyup', (e) => {
+      cells.forEach((cell) => {
+        const key = model.dataset.content;
+        cell.addEventListener('keyup', (e) => {
           state[key] = e.target.value;
         })
       }) 
       
       const render = (prop, val) => {
-        const bindings = Array.from(document.querySelectorAll('[data-binding]')).map(elem => elem.dataset.binding);
-        bindings.forEach(binding => {
-          console.log(state[binding]);
-          document.querySelector(`[data-binding='${binding}']`).innerHTML = state[binding];
-        })
+        
       }
 })()
